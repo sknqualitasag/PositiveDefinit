@@ -26,3 +26,4 @@ smry <- summarise(by_grp,
 tbl_animal <- smry %>% filter(random_effect == "animal")
 tbl_herdyear <- smry %>% filter(random_effect == "herdyear")
 tbl_residual <- smry %>% filter(random_effect == "residual")
+### # Step 3:
