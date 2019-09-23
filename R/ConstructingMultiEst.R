@@ -22,4 +22,7 @@ tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>
 by_grp <- tbl_varCovar %>% group_by(traits, random_effect)
 smry <- summarise(by_grp,
                   meanEstimate = mean(estimate, na.rm = TRUE))
-
+### # Step 2: Split in 3 dataset: animal, herdyear, residual
+tbl_animal <- smry %>% filter(random_effect == "animal")
+tbl_herdyear <- smry %>% filter(random_effect == "herdyear")
+tbl_residual <- smry %>% filter(random_effect == "residual")
