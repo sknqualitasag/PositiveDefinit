@@ -105,8 +105,24 @@ U %*% diag(V) %*% t(U)
 
 #' ## Vectorized Version of `makPD()`
 #' We take the same approach as implemented in `makPD()`, but we try to come up with a vectorized version
-#+ vect-makepd2
+#+ cleanup-before-vect-makepd2
 rm(list = ls())
+#+ vect-makepd2
+# #' Bending of Matrix A
+# #'
+# #' @description
+# #' The input matrix A is decomposed into its eigen-values and eigen-vectors,
+# #' The negative eigen-values are projected into the range between zero and
+# #' the smallest positive eigen-value.
+# #'
+# #' @param A input matrix
+# #'
+# #' @return Bended positive-definite matrix A
+# #' @export makePD2
+# #'
+# #' @examples
+# #' G<- matrix(c(100,80,20,6,80,50,10,2,20,10,6,1,6,2,1,1), ncol = 4, byrow=TRUE)
+# #' makePD2(G)
 makePD2 <- function(A){
   # compute eigenvalue-eigenvector decomposition
   D  <-  eigen(A)
