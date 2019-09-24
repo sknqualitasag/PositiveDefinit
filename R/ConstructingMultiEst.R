@@ -200,6 +200,7 @@ eigen(herdyearVarCovar)
 
 ### # For residual
 residualVarCovar <- matrix(0, nrow = 8, ncol = 8)
+# Prob with NaN deswegen auskommentiert
 #1. Zeile
 residualVarCovar[1,1] <- tbl_residual%>%filter(traits == "ccc")%>%magrittr::extract2("meanEstimate")
 #residualVarCovar[1,2] <- tbl_residual%>%filter(traits == "ccc+cca")%>%magrittr::extract2("meanEstimate")
@@ -282,24 +283,38 @@ eigen(residualVarCovar)
 
 
 
-##Alternative Step 2 and 3
+
+
+
+#### # Alternative Step 2 and 3
+## alle combination? wie, damit z.B. Madeleine mit ccv verwenden kann -> automatisch
+#traits4Matrix <- rbind(c("ccc","ccc+cca","ccc+cfc","ccc+cfa","ccc+cwc","ccc+cwa","ccc+cac","ccc+caa"),
+#                       c("ccc+cca","cca","cca+cfc","cca+cfa","cca+cwc","cca+cwa","cca+cac","cca+caa"),
+#                       c("cfc+ccc","cca+cfc","cfc","cfc+cfa","cfc+cwc","cfc+cwa","cfc+cac","cfc+caa"),
+#                       c("ccc+cfa","cca+cfa","cfc+cfa","cfa","cfa+cwc","cfa+cwa","cfa+cac","cfa+caa"),
+#                       c("ccc+cwc","cca+cwc","cfc+cwc","cfa+cwc","cwc","cwc+cwa","cac+cwc","caa+cwc"),
+#                       c("ccc+cwa","cca+cwa","cfc+cwa","cfa+cwa","cwc+cwa","cwa","cac+cwa","caa+cwa"),
+#                       c("ccc+cac","cca+cac","cfc+cac","cfa+cac","cac+cwc","cac+cwa","cac","cac+caa"),
+#                       c("ccc+caa","cca+caa","cfc+caa","cfa+caa","caa+cwc","caa+cwa","cac+caa","caa"))
+#
+## Zufälligen Effekt selber holen
 #randomEffects <- c("animal","herdyear","residual")
+##randomEffects <- unique(smry %>% select(random_effect) %>% unique() %>% use_series(random_effect))
+#
 ##for(Z in randomEffects){
 #  Z <- "animal"
 #  tbl_Z <- smry %>% filter(random_effect == Z)
 #
 #  VarCovar <- matrix(0, nrow = 8, ncol = 8)
-##  for(i in 1:nrow){ ## !!! immer andere Reihenfolge von traits
-#    i <- 1
-#    VarCovar[i,1] <- tbl_Z %>% filter(traits == "ccc")     %>% magrittr::extract2("meanEstimate")
-#    VarCovar[i,2] <- tbl_Z %>% filter(traits == "ccc+cca") %>% magrittr::extract2("meanEstimate")
-#    VarCovar[i,3] <- tbl_Z %>% filter(traits == "ccc+cfc") %>% magrittr::extract2("meanEstimate")
-#    VarCovar[i,4] <- tbl_Z %>% filter(traits == "ccc+cfa") %>% magrittr::extract2("meanEstimate")
-#    VarCovar[i,5] <- tbl_Z %>% filter(traits == "ccc+cwc") %>% magrittr::extract2("meanEstimate")
-#    VarCovar[i,6] <- tbl_Z %>% filter(traits == "ccc+cwa") %>% magrittr::extract2("meanEstimate")
-#    VarCovar[i,7] <- tbl_Z %>% filter(traits == "ccc+cac") %>% magrittr::extract2("meanEstimate")
-#    VarCovar[i,8] <- tbl_Z %>% filter(traits == "ccc+caa") %>% magrittr::extract2("meanEstimate")
+#  for(i in 1:nrow(VarCovar)){
+#    #i <- 1
+#    for(j in 1:ncol(VarCovar)){
+#      #j <- 1
+#      # ! error mit ccc+cfc deswegen [1,3] leer
+#      VarCovar[i,j] <- tbl_Z %>% filter(traits == traits4Matrix[i,j]) %>% magrittr::extract2("meanEstimate")
+#      j <- j + 1
+#    }
 #    i <- i + 1
-##  }
+#  }
 #
 ##}
