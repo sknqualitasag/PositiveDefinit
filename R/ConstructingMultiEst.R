@@ -9,7 +9,8 @@ library(magrittr)
 library(dplyr)
 
 ### # Read all VCE results
-s_vce_result <- "../../work/VCE_resluts.csv"
+s_data_dir <- file.path(here::here(), "inst","extdata")
+s_vce_result <- file.path(s_data_dir, "VCE_resluts.csv")
 tbl_vce <- readr::read_delim(file = s_vce_result, delim = ";")
 tbl_vce$estimate <- as.numeric(as.character(tbl_vce$estimate))
 
