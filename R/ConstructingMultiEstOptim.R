@@ -1,7 +1,7 @@
 ### #
 ### # Constructing multivariate estimates from analyses by parts
 ### # 2019-09-23 (skn)
-### # ----------------------------------------------
+### # ------------------------------------------------------------
 
 
 ### # Library
@@ -15,12 +15,13 @@ tbl_vce <- readr::read_delim(file = s_vce_result, delim = ";")
 tbl_vce$estimate[tbl_vce$estimate == "---"] <- "0"
 tbl_vce$estimate <- as.numeric(as.character(tbl_vce$estimate))
 
-
 ### # 'Matrices: NATRUAL' are the inputs for mix99 in the routine evaluation containing variance and covariance
 tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% select(type,traits,random_effect,estimate)
 
-
+### # ###############################################################
 ### # Build Matrice with for example Ccc Cca Cfc Cfa Cwc Cwa Cac Caa
+### # ###############################################################
+
 ### # For each traits&random_effect get the mean value of all variants
 by_grp <- tbl_varCovar %>% group_by(traits, random_effect)
 smry <- summarise(by_grp,
@@ -36,33 +37,60 @@ for(i in 1:dim(smry)[1]){
      }
 }
 
-
 ### # Get random effects
 randomEffectsName <- unique(smry %>% select(random_effect) %>% unique() %>% use_series(random_effect))
 
 #### # Get trait
 TraitName <- unique(smry %>% select(trait) %>% unique() %>% use_series(trait))
 
-
-#for(Z in randomEffectsName){
+##for(Z in randomEffectsName){
   Z <- "animal"
   # Tibble per random effect
   tbl_Z <- smry %>% filter(random_effect == Z)
-  # Matrix with NULL values
-  matrix_VarCovar <- matrix(0, nrow = length(TraitName), ncol = length(TraitName))
 
-#  for(i in 1:length(TraitName)){
-    i <- 1
-#    for(j in 1:length(TraitName)){
-    j <- 1
-    #Variance and Covariance
-    matrix_VarCovar[i,j] <- tbl_Z %>% filter(trait == TraitName[[i]] && surrogate == TraitName[[j]]) %>% magrittr::extract2("meanEstimate") # NA's für Variance, nicht alle Variante in `trait` und ``surrogate!!!
-    j <- j + 1
-#    }
-    i <- i + 1
-#  }
+  # Check that all Traitname are as trait and as surrogate
+  for(g in 1:length(TraitName)){
+    g <- 1
+    trtg <- TraitName[g]
+    for(h in 1:length(TraitName)){
+      h <- 2
+      trth <- TraitName[h]
 
-#}
+      #Combinaison trtg & trth is missing
+      if(dim(tbl_Z %>% filter(trait == trtg & surrogate == trth))[1] == 0){
+        #Combinaison trth & trtg is not missing, so get the info of the tibble for the combinaison trtg & trth
+        if(dim(tbl_Z %>% filter(trait == trth & surrogate == trtg))[1] != 0){
+          missing_re <- tbl_Z %>% filter(trait == trth & surrogate == trtg) %>% magrittr::extract2("random_effect")
+          missing_me <- tbl_Z %>% filter(trait == trth & surrogate == trtg) %>% magrittr::extract2("meanEstimate")
+          tbl_missing_trtg_trth <- tibble(trtg,trth,missing_re,missing_me)
+          tbl_Z <- bind_rows(tbl_Z, tbl_missing_trtg_trth)
+
+
+        }
+
+      }
+    }
+  }
+
+
+
+
+
+#  # Matrix with NULL values
+#  matrix_VarCovar <- matrix(0, nrow = length(TraitName), ncol = length(TraitName))
+#
+##  for(i in 1:length(TraitName)){
+#    i <- 1
+##    for(j in 1:length(TraitName)){
+#    j <- 1
+#    #Variance and Covariance
+#    matrix_VarCovar[i,j] <- tbl_Z %>% filter(trait == TraitName[[i]] && surrogate == TraitName[[j]]) %>% magrittr::extract2("meanEstimate") # NA's für Variance, nicht alle Variante in `trait` und ``surrogate!!!
+#    j <- j + 1
+##    }
+#    i <- i + 1
+##  }
+#
+##}
 
 
 
