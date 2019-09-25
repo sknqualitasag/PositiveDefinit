@@ -29,6 +29,14 @@ smry <- summarise(by_grp,
 ### # Split the column `traits` in order to facilitate the matrice building
 smry <- smry %>% separate(traits, c("trait","surrogate"))
 
+### # For variance, NA's are removed
+for(i in 1:dim(smry)[1]){
+     if(is.na(smry$surrogate[i])){
+       smry$surrogate[i] <- smry$trait[i]
+     }
+}
+
+
 ### # Get random effects
 randomEffectsName <- unique(smry %>% select(random_effect) %>% unique() %>% use_series(random_effect))
 
@@ -41,14 +49,14 @@ TraitName <- unique(smry %>% select(trait) %>% unique() %>% use_series(trait))
   # Tibble per random effect
   tbl_Z <- smry %>% filter(random_effect == Z)
   # Matrix with NULL values
-  VarCovar <- matrix(0, nrow = length(TraitName), ncol = length(TraitName))
+  matrix_VarCovar <- matrix(0, nrow = length(TraitName), ncol = length(TraitName))
 
 #  for(i in 1:length(TraitName)){
     i <- 1
 #    for(j in 1:length(TraitName)){
     j <- 1
     #Variance and Covariance
-    VarCovar[i,j] <- tbl_Z %>% filter(trait == TraitName[[i]] && surrogate == TraitName[[j]]) %>% magrittr::extract2("meanEstimate") # NA's für Variance, nicht alle Variante in `trait` und ``surrogate!!!
+    matrix_VarCovar[i,j] <- tbl_Z %>% filter(trait == TraitName[[i]] && surrogate == TraitName[[j]]) %>% magrittr::extract2("meanEstimate") # NA's für Variance, nicht alle Variante in `trait` und ``surrogate!!!
     j <- j + 1
 #    }
     i <- i + 1
