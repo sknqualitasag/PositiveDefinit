@@ -19,6 +19,8 @@ tbl_vce$estimate[tbl_vce$estimate == "---"] <- "0"
 tbl_vce$estimate <- as.numeric(as.character(tbl_vce$estimate))
 
 
+#' Build Matrix
+#' #############################################################
 #' 'Matrices: NATRUAL' are the inputs for mix99 in the routine evaluation containing variance and covariance
 #tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% select(type,traits,random_effect,estimate)
 # Mit Heterosis 2 Kombination fehlen
@@ -64,5 +66,14 @@ for(Z in vec_randomEffect_name){
     mat_randomEffect[smry_Z$surrogate[i], smry_Z$trait[i]] <- smry_Z$meanEstimate[i]
   }
   resultList[[Z]] <- mat_randomEffect
+}
+
+#' Check or Transfrom to be Positive Definit
+#' #############################################################
+
+PDresultList <- NULL
+for(Z in vec_randomEffect_name){
+  # Optimized function of Schaeffer
+  PDresultList[[Z]] <- makePD2(resultList[[Z]])
 }
 
