@@ -68,7 +68,7 @@ for(Z in vec_randomEffect_name){
   resultList[[Z]] <- mat_randomEffect
 }
 
-#' Check or Transfrom to be Positive Definit
+#' Check or Transfrom Matrix to insure beeing Positive Definit
 #' #############################################################
 
 PDresultList <- NULL
@@ -76,4 +76,19 @@ for(Z in vec_randomEffect_name){
   # Optimized function of Schaeffer
   PDresultList[[Z]] <- makePD2(resultList[[Z]])
 }
+
+#' Build Variance/Covariance Parameter File for Mix99
+#' #############################################################
+
+#' Prepare the different input to build the parameter file
+n_nr_randomEffect <- length(vec_randomEffect_name)
+
+#for(Z in vec_randomEffect_name){
+  Z <- "animal"
+  for(i in 1:n_nr_trait){
+    for(j in 1:(n_nr_trait-1)){
+      PDresultList[[Z]][[i,j]]
+    }
+  }
+#}
 
