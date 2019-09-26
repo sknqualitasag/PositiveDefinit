@@ -17,14 +17,14 @@ s_vce_result <- "../../work/VCE_results.csv"
 tbl_vce <- readr::read_delim(file = s_vce_result, delim = ";")
 tbl_vce$estimate[tbl_vce$estimate == "---"] <- "0"
 tbl_vce$estimate <- as.numeric(as.character(tbl_vce$estimate))
-tbl_vce[is.na(tbl_vce[,"model_name"]),"model_name"] <- "Without_Het"
 
 
 #' 'Matrices: NATRUAL' are the inputs for mix99 in the routine evaluation containing variance and covariance
 #tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% select(type,traits,random_effect,estimate)
 # Mit Heterosis 2 Kombination fehlen
 #tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% filter(model_name == "Het") %>% select(type,traits,random_effect,estimate)
-# Ohne Heterosis
+# Ohne Heterosis ! spezifisch zu Sophie
+tbl_vce[is.na(tbl_vce[,"model_name"]),"model_name"] <- "Without_Het"
 tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% filter(model_name == "Without_Het") %>% select(type,traits,random_effect,estimate)
 
 #' Split traits into trait 1 and trait 2
@@ -65,3 +65,4 @@ for(Z in vec_randomEffect_name){
   }
   resultList[[Z]] <- mat_randomEffect
 }
+
