@@ -84,23 +84,22 @@ for(Z in vec_randomEffect_name){
 #' Prepare the different input to build the parameter file
 n_nr_randomEffect <- length(vec_randomEffect_name)
 
-vec_random_effect_names <- names(PDresultList)
+#' Animal and residual should have a specific order in mix99
 vec_random_effect_req <- c("animal", "residual")
-if (!all(vec_random_effect_req %in% vec_random_effect_names))
+if (!all(vec_random_effect_req %in% vec_randomEffect_name))
   stop(" * ERROR: Required random effects animal and residual are not both in list of random effects")
-vec_random_effects_mand <- setdiff(vec_random_effect_names, vec_random_effect_req)
+vec_random_effects_mand <- setdiff(vec_randomEffect_name, vec_random_effect_req)
 vec_random_effect_order <- c(vec_random_effects_mand, vec_random_effect_req)
 
+#' Build Variance/Covariance Parameter-File for Mix99
 s_result_file <- 'mix99_carcass.var'
 if (file.exists(s_result_file))
   file.remove(s_result_file)
 idx_rand_eff <- 1
 for(Z in vec_random_effect_order){
-  # Z <- "animal"
   for(i in 1:n_nr_trait){
     for(j in i:n_nr_trait){
       cat(idx_rand_eff, i, j, format(PDresultList[[Z]][[i,j]], scientific = FALSE), "\n", file = s_result_file, append = TRUE)
-      # cat(idx_rand_eff, i, j, sprintf("%.9f", PDresultList[[Z]][[i,j]]), "\n", file = s_result_file, append = TRUE)
     }
   }
   idx_rand_eff <- idx_rand_eff + 1
