@@ -17,15 +17,20 @@ s_vce_result <- "../../work/VCE_results.csv"
 tbl_vce <- readr::read_delim(file = s_vce_result, delim = ";")
 tbl_vce$estimate[tbl_vce$estimate == "---"] <- "0"
 tbl_vce$estimate <- as.numeric(as.character(tbl_vce$estimate))
+tbl_vce[is.na(tbl_vce[,"model_name"]),"model_name"] <- "Without_Het"
+
 
 #' 'Matrices: NATRUAL' are the inputs for mix99 in the routine evaluation containing variance and covariance
-tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% select(type,traits,random_effect,estimate)
+#tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% select(type,traits,random_effect,estimate)
+# Mit Heterosis 2 Kombination fehlen
+#tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% filter(model_name == "Het") %>% select(type,traits,random_effect,estimate)
+# Ohne Heterosis
+tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% filter(model_name == "Without_Het") %>% select(type,traits,random_effect,estimate)
 
 #' Split traits into trait 1 and trait 2
 #+ trait-split
 tbl_varCovar <- tbl_varCovar %>% separate(traits, c('trait', 'surrogate'), remove = FALSE)
 tbl_varCovar[is.na(tbl_varCovar$surrogate),'surrogate'] <- tbl_varCovar[is.na(tbl_varCovar$surrogate),'trait']
-tbl_varCovar_original <- tbl_varCovar
 
 #' change order of trait and surrogate based on alphabetic order of them
 idx <- tbl_varCovar[,'trait'] > tbl_varCovar[,'surrogate']
