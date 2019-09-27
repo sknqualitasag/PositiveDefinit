@@ -1,7 +1,10 @@
 #' ---
-#' title: Constructing multivariate estimates from analyses by parts
+#' title: Bending and Production of Mix99 Paramater-File
 #' date:  "`r Sys.Date()`"
 #' ---
+
+#' Get the function makePD2() in Rscript MakePD.R
+source("MakePD.R")
 
 #' Run rscript via console
 #+arguments
@@ -29,7 +32,7 @@ suppressPackageStartupMessages(if(! require("tidyr")) {
 
 #' Read all VCE results
 #+ read_transform_misssing_o_type
-s_vce_result <- '/Volumes/data_projekte/projekte/singularity_data_zws_gslim/muku_CarcassVK/work/VCE_results.csv'
+#s_vce_result <- '/Volumes/data_projekte/projekte/singularity_data_zws_gslim/muku_CarcassVK/work/VCE_results.csv'
 tbl_vce <- readr::read_delim(file = s_vce_result, delim = ";")
 tbl_vce$estimate[tbl_vce$estimate == "---"] <- "0"
 tbl_vce$estimate <- as.numeric(as.character(tbl_vce$estimate))
@@ -116,7 +119,7 @@ vec_random_effect_order <- c(vec_random_effects_mand, vec_random_effect_req)
 
 #' Build Variance/Covariance Parameter-File for Mix99
 #+ create_var_file
-s_result_file <- 'mix99.var'
+#s_result_file <- 'mix99.var'
 if (file.exists(s_result_file))
   file.remove(s_result_file)
 idx_rand_eff <- 1
