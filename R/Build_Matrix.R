@@ -11,8 +11,9 @@
 #' @importFrom magrittr %>%
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
-#' @importFrom tidyr
-#' @importFrom readr read_delim
+#' @importFrom dplyr summarise
+#' @importFrom tidyr separate
+#' @importFrom dplyr group_by
 #' @export build_matrix
 build_matrix <- function(psInputFile,
                               pbLog = FALSE){
@@ -54,6 +55,6 @@ build_matrix <- function(psInputFile,
   }
 
   ### # Result of matrix as list
-  return(resultList[[Z]])
+  return(resultList)
 
 }

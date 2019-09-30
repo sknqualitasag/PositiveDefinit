@@ -117,37 +117,33 @@ check_transform_positivedefinit <- function(psInputFile,
                                             psRatio,
                                             pbLog = FALSE){
 
+  vec_randomEffect_name <- names(psInputFile)
   ### # Check if matrix is positive definite
-  # compute eigenvalue decomposition
-  D  <-  eigen(psInputFile)
-  # assign separate values
-  V <- D$values
-  # determine if negative eigenvalues are available
-  if(any(which(V < 0)) == TRUE){
-    ### # Min one eigenvalue is negative, so  which function is choosen
-    if(psOptionRatio == TRUE){
-      # Run function make_pd_rat_ev with parameter psRatio
-      PDresultList <- NULL
-      for(Z in vec_randomEffect_name){ #### ! Sophie : vec_randomEffect_name wie macht man damit es von Funktion hinweg gebraucht werden kann?
-        # Optimized function of Schaeffer
-        PDresultList[[Z]] <- make_pd_rat_ev(resultList[[Z]],psRatio)
-      }
+  PDresultList <- NULL
+  for(Z in vec_randomEffect_name){
+
+    # compute eigenvalue decomposition
+    D  <-  eigen(psInputFile[[Z]])
+    # assign separate values
+    V <- D$values
+    # determine if negative eigenvalues are available
+    if(sum(V < 0) == 0){
+      ### # no negative eigenvalues are availabe
+      PDresultList[[Z]] <- psInputFile[[Z]]
     }else{
-      # Run function makePD2
-      PDresultList <- NULL
-      for(Z in vec_randomEffect_name){ #### ! Sophie : vec_randomEffect_name wie macht man damit es von Funktion hinweg gebraucht werden kann?
+      ### # Min one eigenvalue is negative, so  which function is choosen
+      if(psOptionRatio == TRUE){
+        # Run function make_pd_rat_ev with parameter psRatio
+          PDresultList[[Z]] <- make_pd_rat_ev(psInputFile[[Z]],psRatio)
+        }else{
+        # Run function makePD2
         # Optimized function of Schaeffer
-        PDresultList[[Z]] <- makePD2(resultList[[Z]])
+          PDresultList[[Z]] <- makePD2(psInputFile[[Z]])
       }
     }
-  }else{
-    ### # no negative eigenvalues are availabe
-    PDresultList[[Z]] <- psInputFile
   }
 
-
-
   ### # Result of matrix as list, which is positive definite
-  return(PDresultList[[Z]])
+  return(PDresultList)
 
 }

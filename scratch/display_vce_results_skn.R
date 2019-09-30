@@ -5,7 +5,7 @@ suppressPackageStartupMessages(if(! require("ggplot2")) {
   require("ggplot2")
 })
 
-d.vr <- read.table(file = "VCE_resluts.csv", sep =";", header = TRUE)
+d.vr <- read.table(file = "VCE_results.csv", sep =";", header = TRUE)
 
 orderTraitNames <- function(traits) {
   traits <- as.character(traits)
