@@ -1,5 +1,7 @@
 #' @title Reading VCE results for graphics
 #'
+#' @import ggplot2
+#'
 #' @export read_vce4grafics
 read_vce4grafics <- function(psInputFile,
                      pbLog = FALSE){
