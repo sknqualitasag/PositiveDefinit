@@ -1,26 +1,30 @@
-##' @title Reading VCE results for graphics
-##'
-##' @export read_vce4grafics
-#read_vce4grafics <- function(psInputFile,
-#                     pbLog = FALSE){
-#
-#  ### # Read all VCE results
-#  d.vr <- read.table(file = psInputFile, sep =";", header = TRUE)
-#
-#  orderTraitNames <- function(traits) {
-#    traits <- as.character(traits)
-#    trtvec <- strsplit(traits, split = "+", fixed = TRUE)[[1]]
-#    paste(trtvec[order(trtvec)], collapse = "+")
-#  }
-#  d.vr$traits <- as.factor(apply(d.vr[,"traits",drop=FALSE], 1, orderTraitNames))
-#  d.vr$trait_combination <- as.factor(apply(d.vr[,"trait_combination",drop=FALSE], 1, orderTraitNames))
-#  d.vr$estimate <- as.numeric(as.character(d.vr$estimate))
-#  d.vr$STD_ERR_estimate <- as.numeric(as.character(d.vr$STD_ERR_estimate))
-#
-#  ### # Resulting dataframe
-#  return(d.vr)
-#
-#}
+#' @title Reading VCE results for graphics
+#'
+#' @export read_vce4grafics
+read_vce4grafics <- function(psInputFile,
+                     pbLog = FALSE){
+
+  # Check that files exist
+  if (!file.exists(psInputFile))
+    stop("Cannot find input file: ",psInputFile)
+
+  # Read all VCE results
+  d.vr <- read.table(file = psInputFile, sep =";", header = TRUE)
+
+  orderTraitNames <- function(traits) {
+    traits <- as.character(traits)
+    trtvec <- strsplit(traits, split = "+", fixed = TRUE)[[1]]
+    paste(trtvec[order(trtvec)], collapse = "+")
+  }
+  d.vr$traits <- as.factor(apply(d.vr[,"traits",drop=FALSE], 1, orderTraitNames))
+  d.vr$trait_combination <- as.factor(apply(d.vr[,"trait_combination",drop=FALSE], 1, orderTraitNames))
+  d.vr$estimate <- as.numeric(as.character(d.vr$estimate))
+  d.vr$STD_ERR_estimate <- as.numeric(as.character(d.vr$STD_ERR_estimate))
+
+  # Resulting dataframe
+  return(d.vr)
+
+}
 
 
 
@@ -37,7 +41,7 @@ plot_gencorr <- function(psInputFile){
     facet_grid(rows= vars(model_name)) +
     ggtitle("Genetic correlation")
 
-  return(print(gg))
+  return(gg)
 
 }
 
@@ -75,4 +79,3 @@ plot_var <- function(psInputFile){
   return(print(gg))
 
 }
-

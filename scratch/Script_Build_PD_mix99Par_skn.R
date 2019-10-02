@@ -48,6 +48,7 @@ tbl_vce$estimate <- as.numeric(as.character(tbl_vce$estimate))
 # Ohne Heterosis ! spezifisch zu Sophie
 tbl_vce[is.na(tbl_vce[,"model_name"]),"model_name"] <- "Without_Het"
 tbl_varCovar <- tbl_vce %>% filter(type == "variance" | type == "covariance") %>% filter(model_name == "Without_Het") %>% select(type,traits,random_effect,estimate)
+#tbl_varCovar <- tbl_vce %>% filter(type == "heritability" | type == "genetic_correlation") %>% filter(model_name == "Without_Het") %>% select(type,traits,random_effect,estimate)
 
 #' Split traits into trait 1 and trait 2
 #+ trait-split
@@ -86,8 +87,11 @@ for(Z in vec_randomEffect_name){
 
   # loop over rows of tbl and write elements to matrix
   for (i in 1:nrow(smry_Z)){
-    mat_randomEffect[smry_Z$trait[i], smry_Z$surrogate[i]] <- smry_Z$meanEstimate[i]
-    mat_randomEffect[smry_Z$surrogate[i], smry_Z$trait[i]] <- smry_Z$meanEstimate[i]
+    mat_randomEffect[smry_Z$trait[i], smry_Z$surrogate[i]] <- round(smry_Z$meanEstimate[i],3)
+    mat_randomEffect[smry_Z$surrogate[i], smry_Z$trait[i]] <- round(smry_Z$meanEstimate[i],3)
+
+#    mat_randomEffect[smry_Z$trait[i], smry_Z$surrogate[i]] <- smry_Z$meanEstimate[i]
+#    mat_randomEffect[smry_Z$surrogate[i], smry_Z$trait[i]] <- smry_Z$meanEstimate[i]
   }
   resultList[[Z]] <- mat_randomEffect
 }
@@ -99,7 +103,8 @@ for(Z in vec_randomEffect_name){
 PDresultList <- NULL
 for(Z in vec_randomEffect_name){
   # Optimized function of Schaeffer
-  PDresultList[[Z]] <- makePD2(resultList[[Z]])
+  PDresultList[[Z]] <- round(makePD2(resultList[[Z]]),digits = 3)
+#  PDresultList[[Z]] <- makePD2(resultList[[Z]])
 }
 
 #' Build Variance/Covariance Parameter File for Mix99
@@ -119,7 +124,7 @@ vec_random_effect_order <- c(vec_random_effects_mand, vec_random_effect_req)
 
 #' Build Variance/Covariance Parameter-File for Mix99
 #+ create_var_file
-#s_result_file <- 'mix99.var'
+#s_result_file <- 'mix99_carcass.var'
 if (file.exists(s_result_file))
   file.remove(s_result_file)
 idx_rand_eff <- 1
@@ -127,6 +132,7 @@ for(Z in vec_random_effect_order){
   for(i in 1:n_nr_trait){
     for(j in i:n_nr_trait){
       cat(idx_rand_eff, i, j, format(PDresultList[[Z]][[i,j]], scientific = FALSE), "\n", file = s_result_file, append = TRUE)
+#      cat(idx_rand_eff, i, j, round(PDresultList[[Z]][[i,j]], digits = 3), "\n", file = s_result_file, append = TRUE)
     }
   }
   idx_rand_eff <- idx_rand_eff + 1
